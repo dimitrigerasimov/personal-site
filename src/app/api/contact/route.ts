@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),
-    secure: true,
+    secure: false,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
@@ -23,10 +23,11 @@ export async function POST(req: NextRequest) {
 
   try {
     await transporter.sendMail({
-      from: `"${name}" <${email}>`,
+      from: `"Website Contact Form" <contact@dimitrigerasimov.com>`,
       to: process.env.CONTACT_EMAIL,
       subject: `New message from ${name}`,
-      text: message.toString(),
+      text: `From ${name} <${email}>\n\n ${message}`,
+      replyTo: email as string
     });
 
     return NextResponse.json({ success: true });
